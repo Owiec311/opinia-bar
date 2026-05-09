@@ -1,10 +1,21 @@
+let smileInProgress = false;
 function smileEffect() {
 
     // Wibracja telefonu
     if (navigator.vibrate) {
         navigator.vibrate([120, 60, 120]);
     }
+    // Zabezpieczenie przed wielokrotnym kliknięciem
+    if (smileInProgress) {
+        return;
+    }
 
+    smileInProgress = true;
+
+    // Wibracja telefonu
+    if (navigator.vibrate) {
+        navigator.vibrate([120, 60, 120]);
+    }
     // ==========================================
     // WYWOŁANIE LOKALNEGO SERWERA FLASK
     // ==========================================
@@ -12,7 +23,13 @@ function smileEffect() {
     // lub Raspberry Pi, na którym działa app.py
     fetch("https://elected-vincent-environmental-sox.trycloudflare.com/smile")
         .catch(error => console.log("Błąd połączenia z serwerem:", error));
-
+    // Znajdź przycisk i zablokuj go
+    const button = document.querySelector(".secondary");
+    if (button) {
+        button.disabled = true;
+        button.style.opacity = "0.6";
+        button.style.cursor = "not-allowed";
+    }
     // Overlay
     const overlay = document.createElement("div");
     overlay.className = "smile-overlay";
@@ -69,4 +86,16 @@ function smileEffect() {
     setTimeout(() => {
         overlay.remove();
     }, 3200);
+     // ... tutaj pozostaje Twój kod konfetti i animacji ...
+
+    // Odblokowanie po 12 sekundach
+    setTimeout(() => {
+        smileInProgress = false;
+
+        if (button) {
+            button.disabled = false;
+            button.style.opacity = "";
+            button.style.cursor = "";
+        }
+    }, 12000);
 }
