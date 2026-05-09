@@ -21,7 +21,7 @@ function smileEffect() {
     // ==========================================
     // ZMIEŃ 192.168.1.50 na adres IP komputera
     // lub Raspberry Pi, na którym działa app.py
-    fetch("https://elected-vincent-environmental-sox.trycloudflare.com/smile", {
+    fetch("https://concord-net-realize-occurs.trycloudflare.com/smile", {
     mode: "cors",
     cache: "no-store"
     })
