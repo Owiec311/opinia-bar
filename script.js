@@ -10,7 +10,7 @@ function smileEffect() {
     // ==========================================
     // ZMIEŃ 192.168.1.50 na adres IP komputera
     // lub Raspberry Pi, na którym działa app.py
-    fetch("https://jpg-councils-fleet-clearing.trycloudflare.com/smile")
+    fetch("https://elected-vincent-environmental-sox.trycloudflare.com/smile")
         .catch(error => console.log("Błąd połączenia z serwerem:", error));
 
     // Overlay
