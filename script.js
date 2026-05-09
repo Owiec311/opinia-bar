@@ -1,4 +1,4 @@
-let smileInProgress = false;
+
 function smileEffect() {
 
     // Wibracja telefonu
