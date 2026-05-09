@@ -5,6 +5,14 @@ function smileEffect() {
         navigator.vibrate([120, 60, 120]);
     }
 
+    // ==========================================
+    // WYWOŁANIE LOKALNEGO SERWERA FLASK
+    // ==========================================
+    // ZMIEŃ 192.168.1.50 na adres IP komputera
+    // lub Raspberry Pi, na którym działa app.py
+    fetch("http://192.168.1.37:5000/smile")
+        .catch(error => console.log("Błąd połączenia z serwerem:", error));
+
     // Overlay
     const overlay = document.createElement("div");
     overlay.className = "smile-overlay";
@@ -20,7 +28,7 @@ function smileEffect() {
     text.innerHTML = "Dziękujemy za opinię ❤️";
 
     // Konfetti
-    for(let i = 0; i < 30; i++) {
+    for (let i = 0; i < 30; i++) {
 
         const confetti = document.createElement("div");
 
@@ -32,7 +40,7 @@ function smileEffect() {
             (Math.random() * 0.5) + "s";
 
         confetti.style.transform =
-            `rotate(${Math.random()*360}deg)`;
+            `rotate(${Math.random() * 360}deg)`;
 
         overlay.appendChild(confetti);
     }
@@ -49,7 +57,8 @@ function smileEffect() {
 
     audio.volume = 0.4;
 
-    audio.play();
+    // Bezpieczne odtwarzanie
+    audio.play().catch(() => {});
 
     // Ukrycie efektu
     setTimeout(() => {
