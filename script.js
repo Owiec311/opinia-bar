@@ -1,10 +1,7 @@
+// Dodaj to globalnie (na początku pliku JS, poza funkcją)
+let smileInProgress = false;
 
 function smileEffect() {
-
-    // Wibracja telefonu
-    if (navigator.vibrate) {
-        navigator.vibrate([120, 60, 120]);
-    }
     // Zabezpieczenie przed wielokrotnym kliknięciem
     if (smileInProgress) {
         return;
@@ -12,17 +9,6 @@ function smileEffect() {
 
     smileInProgress = true;
 
-    // Wibracja telefonu
-    if (navigator.vibrate) {
-        navigator.vibrate([120, 60, 120]);
-    }
-    // ==========================================
-    // WYWOŁANIE LOKALNEGO SERWERA FLASK
-    // ==========================================
-    // ZMIEŃ 192.168.1.50 na adres IP komputera
-    // lub Raspberry Pi, na którym działa app.py
-    fetch("https://concord-net-realize-occurs.trycloudflare.com/smile")
-        .catch(error => console.log("Błąd połączenia z serwerem:", error));
     // Znajdź przycisk i zablokuj go
     const button = document.querySelector(".secondary");
     if (button) {
@@ -30,7 +16,29 @@ function smileEffect() {
         button.style.opacity = "0.6";
         button.style.cursor = "not-allowed";
     }
-    // Overlay
+
+    // Wibracja telefonu
+    if (navigator.vibrate) {
+        navigator.vibrate([120, 60, 120]);
+    }
+
+    // ==========================================
+    // WYWOŁANIE SERWERA FLASK
+    // ==========================================
+    // WAŻNE: fetch uruchamiamy w tle i NIE czekamy na odpowiedź.
+    // Dzięki temu animacja pokazuje się natychmiast, nawet jeśli
+    // Cloudflare Tunnel odpowiada z opóźnieniem.
+    fetch("according-franchise-quarters-bond.trycloudflare.com/smile", {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache"
+    }).catch(error => {
+        console.log("Błąd połączenia z serwerem:", error);
+    });
+
+    // ==========================================
+    // ANIMACJA
+    // ==========================================
     const overlay = document.createElement("div");
     overlay.className = "smile-overlay";
 
@@ -46,35 +54,26 @@ function smileEffect() {
 
     // Konfetti
     for (let i = 0; i < 30; i++) {
-
         const confetti = document.createElement("div");
-
         confetti.className = "confetti";
-
         confetti.style.left = Math.random() * 100 + "vw";
-
-        confetti.style.animationDelay =
-            (Math.random() * 0.5) + "s";
-
-        confetti.style.transform =
-            `rotate(${Math.random() * 360}deg)`;
-
+        confetti.style.animationDelay = (Math.random() * 0.5) + "s";
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
         overlay.appendChild(confetti);
     }
 
     overlay.appendChild(emoji);
     overlay.appendChild(text);
-
     document.body.appendChild(overlay);
 
     // Dźwięk
     const audio = new Audio(
         "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"
     );
-
     audio.volume = 0.4;
 
-    // Bezpieczne odtwarzanie
+    // Na niektórych telefonach odtwarzanie może być zablokowane,
+    // dlatego ignorujemy ewentualny błąd.
     audio.play().catch(() => {});
 
     // Ukrycie efektu
@@ -82,13 +81,12 @@ function smileEffect() {
         overlay.classList.add("hide");
     }, 2500);
 
-    // Usunięcie
+    // Usunięcie efektu
     setTimeout(() => {
         overlay.remove();
     }, 3200);
-     // ... tutaj pozostaje Twój kod konfetti i animacji ...
 
-    // Odblokowanie po 12 sekundach
+    // Odblokowanie przycisku po 12 sekundach
     setTimeout(() => {
         smileInProgress = false;
 
