@@ -1,21 +1,4 @@
-// Dodaj to globalnie (na początku pliku JS, poza funkcją)
-let smileInProgress = false;
-
 function smileEffect() {
-    // Zabezpieczenie przed wielokrotnym kliknięciem
-    if (smileInProgress) {
-        return;
-    }
-
-    smileInProgress = true;
-
-    // Znajdź przycisk i zablokuj go
-    const button = document.querySelector(".secondary");
-    if (button) {
-        button.disabled = true;
-        button.style.opacity = "0.6";
-        button.style.cursor = "not-allowed";
-    }
 
     // Wibracja telefonu
     if (navigator.vibrate) {
@@ -23,21 +6,16 @@ function smileEffect() {
     }
 
     // ==========================================
-    // WYWOŁANIE SERWERA FLASK
+    // WYWOŁANIE SERWERA FLASK W TLE
     // ==========================================
-    // WAŻNE: fetch uruchamiamy w tle i NIE czekamy na odpowiedź.
-    // Dzięki temu animacja pokazuje się natychmiast, nawet jeśli
-    // Cloudflare Tunnel odpowiada z opóźnieniem.
-    fetch("according-franchise-quarters-bond.trycloudflare.com/smile", {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache"
-    }).catch(error => {
-        console.log("Błąd połączenia z serwerem:", error);
-    });
+    // Nie czekamy na odpowiedź, więc animacja uruchamia się od razu.
+    fetch("https://according-franchise-quarters-bond.trycloudflare.com/smile")
+        .catch(error => {
+            console.log("Błąd połączenia z serwerem:", error);
+        });
 
     // ==========================================
-    // ANIMACJA
+    // TWORZENIE OVERLAY
     // ==========================================
     const overlay = document.createElement("div");
     overlay.className = "smile-overlay";
@@ -62,38 +40,34 @@ function smileEffect() {
         overlay.appendChild(confetti);
     }
 
+    // Dodanie elementów do overlay
     overlay.appendChild(emoji);
     overlay.appendChild(text);
+
+    // Dodanie overlay do strony
     document.body.appendChild(overlay);
 
-    // Dźwięk
+    // ==========================================
+    // DŹWIĘK
+    // ==========================================
     const audio = new Audio(
         "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"
     );
-    audio.volume = 0.4;
 
-    // Na niektórych telefonach odtwarzanie może być zablokowane,
-    // dlatego ignorujemy ewentualny błąd.
+    audio.volume = 0.4;
     audio.play().catch(() => {});
 
-    // Ukrycie efektu
+    // ==========================================
+    // UKRYCIE ANIMACJI
+    // ==========================================
     setTimeout(() => {
         overlay.classList.add("hide");
     }, 2500);
 
-    // Usunięcie efektu
+    // ==========================================
+    // USUNIĘCIE Z DOM
+    // ==========================================
     setTimeout(() => {
         overlay.remove();
     }, 3200);
-
-    // Odblokowanie przycisku po 12 sekundach
-    setTimeout(() => {
-        smileInProgress = false;
-
-        if (button) {
-            button.disabled = false;
-            button.style.opacity = "";
-            button.style.cursor = "";
-        }
-    }, 12000);
 }
