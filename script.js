@@ -9,7 +9,7 @@ function smileEffect() {
     // WYWOŁANIE SERWERA FLASK W TLE
     // ==========================================
     // Nie czekamy na odpowiedź, więc animacja uruchamia się od razu.
-    fetch("https://student-intention-tonight-actual.trycloudflare.com/smile")
+    fetch("https://smile.owiectech.uk/smile")
         .catch(error => {
             console.log("Błąd połączenia z serwerem:", error);
         });
